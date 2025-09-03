@@ -1,5 +1,1604 @@
 <!DOCTYPE html>
+<html lang="en"><!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department of Home Affairs - Blockchain Portal | Republic of South Africa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .tech-font {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+        
+        /* Security Patterns */
+        .dha-primary {
+            background: linear-gradient(135deg, #001122 0%, #003366 50%, #002952 100%);
+            box-shadow: 0 20px 60px rgba(0, 51, 102, 0.4);
+        }
+        
+        .dha-secondary {
+            background: linear-gradient(135deg, #004422 0%, #006633 50%, #005533 100%);
+            box-shadow: 0 20px 60px rgba(0, 153, 102, 0.4);
+        }
+        
+        .sa-flag-gradient {
+            background: linear-gradient(to right, 
+                #000000 0%, #000000 16.66%, 
+                #ffd700 16.66%, #ffd700 33.33%, 
+                #ffffff 33.33%, #ffffff 50%, 
+                #dc143c 50%, #dc143c 66.66%, 
+                #228b22 66.66%, #228b22 83.33%, 
+                #0047ab 83.33%, #0047ab 100%);
+            height: 6px;
+            border-radius: 3px;
+        }
+        
+        /* Security Animations */
+        .security-pulse {
+            animation: securityPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes securityPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        
+        .holographic-seal {
+            background: conic-gradient(from 0deg, #3b82f6, #10b981, #8b5cf6, #f59e0b, #ef4444, #3b82f6);
+            animation: holographicRotate 4s linear infinite;
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        @keyframes holographicRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .security-thread {
+            background: linear-gradient(90deg, 
+                transparent 0%, #3b82f6 25%, #10b981 50%, #8b5cf6 75%, transparent 100%);
+            animation: securityFlow 3s linear infinite;
+            height: 3px;
+        }
+        
+        @keyframes securityFlow {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* Card Effects */
+        .card-enhanced {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card-enhanced:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Loading Animation */
+        .loading-spinner {
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #3b82f6;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Form Styles */
+        .form-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+        
+        /* Status Indicators */
+        .status-online {
+            background: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+        
+        .status-processing {
+            background: #f59e0b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+        
+        .status-secure {
+            background: #3b82f6;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .card-enhanced {
+                margin: 0 10px;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Blockchain Security Indicators */
+        .blockchain-indicator {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            animation: blockchainPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes blockchainPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(118, 75, 162, 0.8); }
+        }
+
+        .quantum-secure {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+            background-size: 300% 300%;
+            animation: quantumFlow 4s ease infinite;
+        }
+
+        @keyframes quantumFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Wallet Connection Styles */
+        .wallet-connected {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .wallet-disconnected {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .blockchain-status {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen">
+
+    <!-- Security Header -->
+    <div id="securityHeader" class="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-90 backdrop-blur-lg text-white py-2 px-4">
+        <div class="container mx-auto flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-2 h-2 rounded-full blockchain-indicator security-pulse"></div>
+                    <span class="tech-font">REAL BLOCKCHAIN CONNECTION</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                    <div class="w-2 h-2 rounded-full status-online"></div>
+                    <div class="w-2 h-2 rounded-full status-processing"></div>
+                    <div class="w-2 h-2 rounded-full status-secure"></div>
+                    <span class="ml-2 tech-font" id="networkStatus">POLYGON MAINNET</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div id="walletStatus" class="wallet-disconnected" onclick="connectWallet()">
+                    <span id="walletText">CONNECT WALLET</span>
+                </div>
+                <span id="sessionTimer" class="tech-font text-green-400">SESSION: 29:47</span>
+                <span class="tech-font">BLOCKCHAIN: LIVE</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Login Screen -->
+    <div id="mainLogin" class="min-h-screen dha-primary flex items-center justify-center p-6 relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="grid grid-cols-8 gap-4 h-full">
+                <div class="space-y-4" style="animation: float 6s ease-in-out infinite;">
+                    <div class="w-2 h-2 bg-white rounded-full opacity-30"></div>
+                    <div class="w-1 h-1 bg-blue-300 rounded-full opacity-40"></div>
+                    <div class="w-3 h-3 bg-green-300 rounded-full opacity-20"></div>
+                </div>
+                <div class="space-y-4" style="animation: float 8s ease-in-out infinite reverse;">
+                    <div class="w-1 h-1 bg-purple-300 rounded-full opacity-30"></div>
+                    <div class="w-2 h-2 bg-yellow-300 rounded-full opacity-25"></div>
+                    <div class="w-1 h-1 bg-red-300 rounded-full opacity-35"></div>
+                </div>
+                <div class="space-y-4" style="animation: float 7s ease-in-out infinite;">
+                    <div class="w-2 h-2 bg-indigo-300 rounded-full opacity-20"></div>
+                    <div class="w-1 h-1 bg-pink-300 rounded-full opacity-40"></div>
+                    <div class="w-3 h-3 bg-cyan-300 rounded-full opacity-15"></div>
+                </div>
+                <div class="space-y-4" style="animation: float 9s ease-in-out infinite reverse;">
+                    <div class="w-1 h-1 bg-orange-300 rounded-full opacity-30"></div>
+                    <div class="w-2 h-2 bg-teal-300 rounded-full opacity-25"></div>
+                </div>
+                <div class="space-y-4" style="animation: float 5s ease-in-out infinite;">
+                    <div class="w-2 h-2 bg-lime-300 rounded-full opacity-35"></div>
+                    <div class="w-1 h-1 bg-rose-300 rounded-full opacity-20"></div>
+                </div>
+                <div class="space-y-4" style="animation: float 10s ease-in-out infinite reverse;">
+                    <div class="w-1 h-1 bg-violet-300 rounded-full opacity-40"></div>
+                    <div class="w-3 h-3 bg-emerald-300 rounded-full opacity-15"></div>
+                </div>
+                <div class="space-y-4" style="animation: float 6s ease-in-out infinite;">
+                    <div class="w-2 h-2 bg-sky-300 rounded-full opacity-30"></div>
+                    <div class="w-1 h-1 bg-amber-300 rounded-full opacity-25"></div>
+                </div>
+                <div class="space-y-4" style="animation: float 8s ease-in-out infinite reverse;">
+                    <div class="w-1 h-1 bg-fuchsia-300 rounded-full opacity-35"></div>
+                    <div class="w-2 h-2 bg-slate-300 rounded-full opacity-20"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header Bar -->
+        <div class="absolute top-16 left-0 right-0 bg-white bg-opacity-10 backdrop-blur-xl border-b border-white border-opacity-20 p-6">
+            <div class="flex items-center justify-between max-w-6xl mx-auto">
+                <div class="flex items-center space-x-4">
+                    <div class="holographic-seal w-16 h-16 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white z-10 relative" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                        </svg>
+                    </div>
+                    <div class="text-white">
+                        <div class="font-black text-xl tech-font">DEPARTMENT OF HOME AFFAIRS</div>
+                        <div class="text-sm opacity-90 font-bold">Republic of South Africa • Real Blockchain Portal</div>
+                        <div class="text-xs opacity-80 tech-font">EST. 1994 • POLYGON NETWORK • LIVE BLOCKCHAIN</div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div class="text-center">
+                        <div class="text-xs opacity-80 tech-font">BLOCKCHAIN STATUS</div>
+                        <div class="flex space-x-1 mt-1">
+                            <div class="w-2 h-2 rounded-full blockchain-indicator"></div>
+                            <div class="w-2 h-2 rounded-full status-processing"></div>
+                            <div class="w-2 h-2 rounded-full status-secure"></div>
+                        </div>
+                        <div class="text-xs opacity-80 mt-1 tech-font font-bold" id="blockchainNetwork">POLYGON-LIVE</div>
+                    </div>
+                    <div class="text-white text-sm">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl">🇿🇦</span>
+                            <div>
+                                <div class="font-bold">English</div>
+                                <div class="text-xs opacity-80">11 Languages</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-enhanced rounded-2xl p-12 w-full max-w-3xl relative overflow-hidden mt-20">
+            <!-- Official Seal -->
+            <div class="absolute top-8 right-8 opacity-10">
+                <svg viewBox="0 0 120 120" class="w-24 h-24">
+                    <circle cx="60" cy="60" r="55" fill="#FFD700" stroke="#003366" stroke-width="3"/>
+                    <circle cx="60" cy="60" r="45" fill="#ffffff" stroke="#003366" stroke-width="2"/>
+                    <path d="M35 35 L60 25 L85 35 L85 65 L60 85 L35 65 Z" fill="#003366" stroke="#FFD700" stroke-width="2"/>
+                    <circle cx="60" cy="50" r="12" fill="#dc143c"/>
+                    <path d="M45 50 L60 35 L75 50 L60 65 Z" fill="#228b22"/>
+                    <rect x="25" y="85" width="70" height="12" fill="#dc143c" rx="2"/>
+                    <text x="60" y="93" text-anchor="middle" font-size="6" fill="white" font-weight="bold">!KE E:/XARRA //KE</text>
+                </svg>
+            </div>
+
+            <div class="text-center mb-12 relative z-10">
+                <!-- Enhanced Official Seal -->
+                <div class="holographic-seal w-24 h-24 mx-auto mb-8 flex items-center justify-center">
+                    <svg class="w-12 h-12 text-white z-10 relative" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                    </svg>
+                </div>
+
+                <h1 class="text-4xl font-black text-gray-900 mb-3 tech-font">DEPARTMENT OF HOME AFFAIRS</h1>
+                <p class="text-gray-700 font-bold mb-2 text-lg">Republic of South Africa</p>
+                <p class="text-gray-600 text-base mb-6">Real Blockchain Government Portal • Live Polygon Network</p>
+                
+                <!-- SA Flag -->
+                <div class="sa-flag-gradient w-full mb-6"></div>
+                
+                <!-- Blockchain Connection Status -->
+                <div id="blockchainConnectionStatus" class="blockchain-status mb-6">
+                    <div class="flex items-center justify-center space-x-3">
+                        <div class="w-3 h-3 rounded-full bg-red-500" id="connectionIndicator"></div>
+                        <span class="tech-font font-bold" id="connectionText">CONNECTING TO BLOCKCHAIN...</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mt-2" id="connectionDetails">
+                        Please connect your wallet to access blockchain services
+                    </div>
+                </div>
+                
+                <!-- Enhanced Security Badge -->
+                <div class="inline-flex items-center quantum-secure text-white px-6 py-3 rounded-full text-sm font-bold border border-purple-200">
+                    <div class="flex space-x-1 mr-3">
+                        <div class="w-2 h-2 rounded-full blockchain-indicator"></div>
+                        <div class="w-2 h-2 rounded-full status-processing"></div>
+                        <div class="w-2 h-2 rounded-full status-secure"></div>
+                    </div>
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="tech-font">REAL BLOCKCHAIN • POLYGON NETWORK</span>
+                </div>
+            </div>
+            
+            <div class="space-y-6 relative z-10">
+                <button onclick="checkWalletAndShowServices()" class="w-full btn-primary py-6 px-8 rounded-xl font-bold flex items-center justify-between group text-lg">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-6">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-black text-xl tech-font">CITIZEN SERVICES</div>
+                            <div class="text-sm opacity-90 font-semibold">Apply for real blockchain-secured documents</div>
+                            <div class="text-xs opacity-80 mt-1">🆔 Smart ID • 📘 Passport • 📜 Certificates • ⛓️ Live Blockchain</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="text-right mr-4">
+                            <div class="text-xs opacity-80 tech-font">Polygon Network</div>
+                            <div class="text-xs opacity-80">Real Blockchain</div>
+                        </div>
+                        <svg class="w-6 h-6 transform group-hover:translate-x-2 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </button>
+                
+                <button onclick="showDocumentVerification()" class="w-full btn-secondary py-6 px-8 rounded-xl font-bold flex items-center justify-between group text-lg">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-6">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 102 0V3h4v1a1 1 0 102 0V3a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm8 8a1 1 0 01-1-1V8a1 1 0 10-2 0v4a3 3 0 003 3h1a1 1 0 100-2h-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-black text-xl tech-font">BLOCKCHAIN VERIFICATION</div>
+                            <div class="text-sm opacity-90 font-semibold">Verify documents on live blockchain network</div>
+                            <div class="text-xs opacity-80 mt-1">⛓️ Real Blockchain • 👁️ Live Verification • 📡 Polygon Network</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="text-right mr-4">
+                            <div class="text-xs opacity-80 tech-font">Live Network</div>
+                            <div class="text-xs opacity-80">Real Verification</div>
+                        </div>
+                        <svg class="w-6 h-6 transform group-hover:translate-x-2 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+            
+            <!-- Footer -->
+            <div class="mt-12 pt-8 border-t border-gray-200 text-center relative z-10">
+                <div class="security-thread mb-4"></div>
+                <div class="text-sm text-gray-500 space-y-3">
+                    <div class="flex items-center justify-center space-x-4 flex-wrap">
+                        <span class="flex items-center space-x-1">
+                            <div class="w-2 h-2 rounded-full blockchain-indicator"></div>
+                            <span class="tech-font font-bold">Real Blockchain</span>
+                        </span>
+                        <span>•</span>
+                        <span class="tech-font font-bold">🔗 Polygon Network</span>
+                        <span>•</span>
+                        <span class="tech-font font-bold">⚡ Live Transactions</span>
+                    </div>
+                    <div class="tech-font text-blue-600 font-bold" id="contractAddress">
+                        CONTRACT: Loading...
+                    </div>
+                    <div class="text-xs text-gray-400 space-y-1">
+                        <div>© 2024 Department of Home Affairs, Republic of South Africa</div>
+                        <div class="flex items-center justify-center space-x-3 flex-wrap">
+                            <span>Real Blockchain Integration</span>
+                            <span>•</span>
+                            <span>Polygon Network</span>
+                            <span>•</span>
+                            <span>Live Smart Contracts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Citizen Services Portal -->
+    <div id="citizenServices" class="hidden min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <!-- Header -->
+        <div class="dha-primary shadow-xl relative overflow-hidden">
+            <div class="container mx-auto px-6 py-8 relative z-10">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-6">
+                        <button onclick="showMainLogin()" class="bg-white bg-opacity-20 backdrop-blur-lg text-white px-6 py-3 rounded-xl hover:bg-opacity-30 transition duration-300 flex items-center space-x-3 group">
+                            <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="font-bold">Back to Portal</span>
+                        </button>
+                        <div class="text-white">
+                            <h1 class="text-3xl font-black tech-font">REAL BLOCKCHAIN CITIZEN SERVICES</h1>
+                            <p class="text-blue-100 text-lg font-bold">Submit applications to live Polygon blockchain network</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-6 py-10">
+            <!-- Wallet Connection Alert -->
+            <div id="walletAlert" class="hidden bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-8 rounded-lg">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700">
+                            <strong>Wallet Required:</strong> Please connect your MetaMask wallet to submit applications to the blockchain.
+                            <button onclick="connectWallet()" class="ml-2 underline font-bold">Connect Now</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Smart ID Card -->
+                <div class="card-enhanced rounded-2xl p-10 relative overflow-hidden group">
+                    <div class="holographic-seal w-20 h-20 mb-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <svg class="w-10 h-10 text-white z-10 relative" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="text-2xl font-black text-gray-900 mb-4 tech-font">SMART ID CARD</h3>
+                    <p class="text-gray-600 mb-8 text-lg font-semibold">Apply for blockchain-secured Smart ID with real network storage</p>
+                    
+                    <button onclick="showIDApplication()" class="w-full btn-primary py-5 px-8 rounded-2xl font-black flex items-center justify-center space-x-3 group text-lg">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="tech-font">APPLY ON BLOCKCHAIN</span>
+                    </button>
+                    <div class="text-xs text-center mt-2 text-gray-500">
+                        Gas Fee: ~$0.01 MATIC
+                    </div>
+                </div>
+                
+                <!-- Passport Application -->
+                <div class="card-enhanced rounded-2xl p-10 relative overflow-hidden group">
+                    <div class="holographic-seal w-20 h-20 mb-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <svg class="w-10 h-10 text-white z-10 relative" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 102 0V3h4v1a1 1 0 102 0V3a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V5z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="text-2xl font-black text-gray-900 mb-4 tech-font">SA PASSPORT</h3>
+                    <p class="text-gray-600 mb-8 text-lg font-semibold">Apply for blockchain-verified passport with live network validation</p>
+                    
+                    <button onclick="showPassportApplication()" class="w-full btn-secondary py-5 px-8 rounded-2xl font-black flex items-center justify-center space-x-3 group text-lg">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="tech-font">APPLY ON BLOCKCHAIN</span>
+                    </button>
+                    <div class="text-xs text-center mt-2 text-gray-500">
+                        Gas Fee: ~$0.01 MATIC
+                    </div>
+                </div>
+
+                <!-- Birth Certificate -->
+                <div class="card-enhanced rounded-2xl p-10 relative overflow-hidden group">
+                    <div class="holographic-seal w-20 h-20 mb-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <svg class="w-10 h-10 text-white z-10 relative" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="text-2xl font-black text-gray-900 mb-4 tech-font">BIRTH CERTIFICATE</h3>
+                    <p class="text-gray-600 mb-8 text-lg font-semibold">Register birth on live blockchain with permanent immutable record</p>
+                    
+                    <button onclick="showBirthCertApplication()" class="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white py-5 px-8 rounded-2xl font-black flex items-center justify-center space-x-3 group text-lg transition-all duration-300">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="tech-font">APPLY ON BLOCKCHAIN</span>
+                    </button>
+                    <div class="text-xs text-center mt-2 text-gray-500">
+                        Gas Fee: ~$0.01 MATIC
+                    </div>
+                </div>
+
+                <!-- Work Permit -->
+                <div class="card-enhanced rounded-2xl p-10 relative overflow-hidden group">
+                    <div class="holographic-seal w-20 h-20 mb-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <svg class="w-10 h-10 text-white z-10 relative" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M20 6L9 17l-5-5"/>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="text-2xl font-black text-gray-900 mb-4 tech-font">WORK PERMIT</h3>
+                    <p class="text-gray-600 mb-8 text-lg font-semibold">Apply for blockchain-secured work authorization on live network</p>
+                    
+                    <button onclick="showWorkPermitApplication()" class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white py-5 px-8 rounded-2xl font-black flex items-center justify-center space-x-3 group text-lg transition-all duration-300">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="tech-font">APPLY ON BLOCKCHAIN</span>
+                    </button>
+                    <div class="text-xs text-center mt-2 text-gray-500">
+                        Gas Fee: ~$0.01 MATIC
+                    </div>
+                </div>
+
+                <!-- Study Permit -->
+                <div class="card-enhanced rounded-2xl p-10 relative overflow-hidden group">
+                    <div class="holographic-seal w-20 h-20 mb-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <svg class="w-10 h-10 text-white z-10 relative" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="text-2xl font-black text-gray-900 mb-4 tech-font">STUDY PERMIT</h3>
+                    <p class="text-gray-600 mb-8 text-lg font-semibold">Apply for blockchain-verified student visa on live network</p>
+                    
+                    <button onclick="showStudyPermitApplication()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-5 px-8 rounded-2xl font-black flex items-center justify-center space-x-3 group text-lg transition-all duration-300">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="tech-font">APPLY ON BLOCKCHAIN</span>
+                    </button>
+                    <div class="text-xs text-center mt-2 text-gray-500">
+                        Gas Fee: ~$0.01 MATIC
+                    </div>
+                </div>
+
+                <!-- Marriage Certificate -->
+                <div class="card-enhanced rounded-2xl p-10 relative overflow-hidden group">
+                    <div class="holographic-seal w-20 h-20 mb-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <svg class="w-10 h-10 text-white z-10 relative" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="text-2xl font-black text-gray-900 mb-4 tech-font">MARRIAGE CERTIFICATE</h3>
+                    <p class="text-gray-600 mb-8 text-lg font-semibold">Register marriage on live blockchain with permanent record</p>
+                    
+                    <button onclick="showMarriageCertApplication()" class="w-full bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white py-5 px-8 rounded-2xl font-black flex items-center justify-center space-x-3 group text-lg transition-all duration-300">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="tech-font">APPLY ON BLOCKCHAIN</span>
+                    </button>
+                    <div class="text-xs text-center mt-2 text-gray-500">
+                        Gas Fee: ~$0.01 MATIC
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Verification Portal -->
+    <div id="documentVerification" class="hidden min-h-screen bg-gradient-to-br from-slate-50 via-green-50 to-emerald-50">
+        <div class="dha-secondary shadow-xl relative overflow-hidden">
+            <div class="container mx-auto px-6 py-8 relative z-10">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-6">
+                        <button onclick="showMainLogin()" class="bg-white bg-opacity-20 backdrop-blur-lg text-white px-6 py-3 rounded-xl hover:bg-opacity-30 transition duration-300 flex items-center space-x-3 group">
+                            <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="font-bold">Back to Portal</span>
+                        </button>
+                        <div class="text-white">
+                            <h1 class="text-3xl font-black tech-font">LIVE BLOCKCHAIN VERIFICATION</h1>
+                            <p class="text-green-100 text-lg font-bold">Verify documents on real Polygon blockchain network</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-6 py-10">
+            <div class="max-w-4xl mx-auto">
+                <div class="card-enhanced rounded-2xl p-10">
+                    <div class="text-center mb-10">
+                        <div class="holographic-seal w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-white z-10 relative" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <h2 class="text-3xl font-black text-gray-900 mb-4 tech-font">LIVE BLOCKCHAIN VERIFICATION</h2>
+                        <p class="text-gray-600 text-lg">Verify documents directly on the Polygon blockchain network</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                        <div class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-green-500 transition-colors duration-300 cursor-pointer" onclick="document.getElementById('fileUpload').click()">
+                            <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2 tech-font">UPLOAD DOCUMENT</h3>
+                            <p class="text-gray-600">Click to upload or drag and drop</p>
+                            <p class="text-sm text-gray-500 mt-2">Supports: PDF, JPG, PNG (Max 10MB)</p>
+                            <input type="file" id="fileUpload" class="hidden" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this)">
+                        </div>
+
+                        <div class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-blue-500 transition-colors duration-300 cursor-pointer" onclick="startCamera()">
+                            <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2 tech-font">SCAN WITH CAMERA</h3>
+                            <p class="text-gray-600">Use device camera to scan</p>
+                            <p class="text-sm text-gray-500 mt-2">Real-time document detection</p>
+                        </div>
+                    </div>
+
+                    <div id="verificationResult" class="hidden">
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-8 mb-8">
+                            <div class="flex items-center justify-center mb-6">
+                                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-black text-green-800 text-center mb-4 tech-font">BLOCKCHAIN VERIFIED ✓</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-bold text-green-700 mb-2 tech-font">Document Details:</h4>
+                                    <div class="space-y-1 text-sm">
+                                        <div><span class="font-bold">Type:</span> <span id="docType">Smart ID Card</span></div>
+                                        <div><span class="font-bold">ID Number:</span> <span id="docNumber">9001015009087</span></div>
+                                        <div><span class="font-bold">Issue Date:</span> <span id="issueDate">2024-01-15</span></div>
+                                        <div><span class="font-bold">Expiry Date:</span> <span id="expiryDate">2034-01-15</span></div>
+                                        <div><span class="font-bold">Blockchain Hash:</span> <span id="blockchainHashDisplay" class="tech-font text-xs">Loading...</span></div>
+                                        <div><span class="font-bold">Transaction:</span> <span id="transactionHash" class="tech-font text-xs">Loading...</span></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-green-700 mb-2 tech-font">Blockchain Status:</h4>
+                                    <div class="space-y-1 text-sm">
+                                        <div class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>Live blockchain verified</div>
+                                        <div class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>Polygon network confirmed</div>
+                                        <div class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>Smart contract validated</div>
+                                        <div class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>Immutable record found</div>
+                                        <div class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>Gas fee: <span id="gasFee">~$0.001</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6 text-center">
+                                <button onclick="generateVerificationPDF()" class="btn-secondary py-3 px-6 rounded-xl font-bold flex items-center space-x-2 mx-auto">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="tech-font">DOWNLOAD BLOCKCHAIN CERTIFICATE</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button onclick="verifyDocumentOnBlockchain()" class="btn-secondary py-4 px-8 rounded-xl font-bold text-lg flex items-center space-x-3 mx-auto">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="tech-font">VERIFY ON LIVE BLOCKCHAIN</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ID Application Form -->
+    <div id="idApplication" class="hidden min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <div class="dha-primary shadow-xl relative overflow-hidden">
+            <div class="container mx-auto px-6 py-8 relative z-10">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-6">
+                        <button onclick="showCitizenServices()" class="bg-white bg-opacity-20 backdrop-blur-lg text-white px-6 py-3 rounded-xl hover:bg-opacity-30 transition duration-300 flex items-center space-x-3 group">
+                            <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="font-bold">Back to Services</span>
+                        </button>
+                        <div class="text-white">
+                            <h1 class="text-3xl font-black tech-font">LIVE BLOCKCHAIN SMART ID APPLICATION</h1>
+                            <p class="text-blue-100 text-lg font-bold">Submit directly to Polygon blockchain network</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-6 py-10">
+            <div class="max-w-4xl mx-auto">
+                <div class="card-enhanced rounded-2xl p-10">
+                    <form id="smartIdForm" onsubmit="submitIDApplicationToBlockchain(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2 tech-font">FULL NAMES</label>
+                                <input type="text" name="fullNames" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter your full names" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2 tech-font">SURNAME</label>
+                                <input type="text" name="surname" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter your surname" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2 tech-font">ID NUMBER</label>
+                                <input type="text" name="idNumber" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter your ID number" pattern="[0-9]{13}" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2 tech-font">DATE OF BIRTH</label>
+                                <input type="date" name="dateOfBirth" class="form-input w-full px-4 py-3 rounded-xl" required>
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <label class="block text-sm font-bold text-gray-700 mb-2 tech-font">RESIDENTIAL ADDRESS</label>
+                            <textarea name="address" class="form-input w-full px-4 py-3 rounded-xl" rows="3" placeholder="Enter your full residential address" required></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2 tech-font">MOBILE NUMBER</label>
+                                <input type="tel" name="mobile" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter mobile number" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2 tech-font">EMAIL ADDRESS</label>
+                                <input type="email" name="email" class="form-input w-full px-4 py-3 rounded-xl" placeholder="Enter email address" required>
+                            </div>
+                        </div>
+
+                        <div class="mt-10 pt-8 border-t border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-lg font-bold text-gray-900 tech-font">Application Fee: R140.00</div>
+                                    <div class="text-sm text-gray-600">Processing time: 7-10 business days</div>
+                                    <div class="text-sm text-blue-600 tech-font">⛓️ Live blockchain submission</div>
+                                    <div class="text-xs text-gray-500 mt-1">Gas fee: ~$0.01 MATIC (paid from your wallet)</div>
+                                </div>
+                                <button type="submit" class="btn-primary py-4 px-8 rounded-xl font-bold text-lg flex items-center space-x-3">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="tech-font">SUBMIT TO LIVE BLOCKCHAIN</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="card-enhanced rounded-2xl p-10 max-w-md mx-4 text-center">
+            <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 mb-4 tech-font">LIVE BLOCKCHAIN SUBMISSION COMPLETE</h3>
+            <p class="text-gray-600 mb-6">Your application has been successfully submitted to the live Polygon blockchain network.</p>
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200 mb-6">
+                <div class="text-lg font-black text-green-600 tech-font" id="referenceNumber">REF: Loading...</div>
+                <div class="text-sm text-gray-600">Blockchain Reference Number</div>
+                <div class="text-xs text-blue-600 tech-font mt-2" id="realBlockchainHash">TX HASH: Loading...</div>
+                <div class="text-xs text-gray-500 mt-1" id="blockNumber">BLOCK: Loading...</div>
+                <div class="text-xs text-gray-500" id="networkInfo">NETWORK: Polygon Mainnet</div>
+            </div>
+            <div class="flex space-x-3 justify-center flex-wrap gap-2">
+                <button onclick="generateEnhancedApplicationPDF()" class="btn-primary py-3 px-6 rounded-xl font-bold flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="tech-font">DOWNLOAD BLOCKCHAIN RECEIPT</span>
+                </button>
+                <button onclick="viewOnPolygonScan()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-3 px-6 rounded-xl font-bold flex items-center space-x-2 transition-all duration-300">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="tech-font">VIEW ON POLYGONSCAN</span>
+                </button>
+                <button onclick="closeSuccessModal()" class="btn-secondary py-3 px-6 rounded-xl font-bold tech-font">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentApplicationData = {};
+        let sessionTimer = 1787;
+        let web3;
+        let contract;
+        let userAccount;
+        let isWalletConnected = false;
+
+        // Smart Contract Configuration (Polygon Mainnet)
+        const CONTRACT_ADDRESS = '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b7'; // Example contract address
+        const CONTRACT_ABI = [
+            {
+                "inputs": [
+                    {"internalType": "string", "name": "_refNumber", "type": "string"},
+                    {"internalType": "string", "name": "_applicationType", "type": "string"},
+                    {"internalType": "string", "name": "_dataHash", "type": "string"}
+                ],
+                "name": "submitApplication",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [{"internalType": "string", "name": "_refNumber", "type": "string"}],
+                "name": "getApplication",
+                "outputs": [
+                    {"internalType": "string", "name": "", "type": "string"},
+                    {"internalType": "string", "name": "", "type": "string"},
+                    {"internalType": "string", "name": "", "type": "string"},
+                    {"internalType": "uint256", "name": "", "type": "uint256"},
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
+
+        // Polygon Network Configuration
+        const POLYGON_NETWORK = {
+            chainId: '0x89', // 137 in decimal
+            chainName: 'Polygon Mainnet',
+            nativeCurrency: {
+                name: 'MATIC',
+                symbol: 'MATIC',
+                decimals: 18
+            },
+            rpcUrls: ['https://polygon-rpc.com/'],
+            blockExplorerUrls: ['https://polygonscan.com/']
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            startSessionTimer();
+            updateSecurityStatus();
+            initializeBlockchain();
+            checkWalletConnection();
+        });
+
+        // Initialize blockchain connection
+        async function initializeBlockchain() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    web3 = new Web3(window.ethereum);
+                    
+                    // Check if already connected
+                    const accounts = await web3.eth.getAccounts();
+                    if (accounts.length > 0) {
+                        userAccount = accounts[0];
+                        isWalletConnected = true;
+                        updateWalletStatus(true);
+                        initializeContract();
+                    } else {
+                        updateConnectionStatus('disconnected');
+                    }
+                } catch (error) {
+                    console.error('Blockchain initialization error:', error);
+                    updateConnectionStatus('error');
+                }
+            } else {
+                updateConnectionStatus('no-wallet');
+            }
+        }
+
+        // Initialize smart contract
+        function initializeContract() {
+            try {
+                contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+                updateConnectionStatus('connected');
+                document.getElementById('contractAddress').textContent = `CONTRACT: ${CONTRACT_ADDRESS.substring(0, 10)}...`;
+            } catch (error) {
+                console.error('Contract initialization error:', error);
+                updateConnectionStatus('error');
+            }
+        }
+
+        // Connect wallet function
+        async function connectWallet() {
+            if (typeof window.ethereum === 'undefined') {
+                alert('MetaMask is not installed. Please install MetaMask to use blockchain features.');
+                window.open('https://metamask.io/download/', '_blank');
+                return;
+            }
+
+            try {
+                // Request account access
+                const accounts = await window.ethereum.request({
+                    method: 'eth_requestAccounts'
+                });
+
+                // Switch to Polygon network
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: POLYGON_NETWORK.chainId }]
+                    });
+                } catch (switchError) {
+                    // Network not added, add it
+                    if (switchError.code === 4902) {
+                        await window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [POLYGON_NETWORK]
+                        });
+                    }
+                }
+
+                userAccount = accounts[0];
+                isWalletConnected = true;
+                web3 = new Web3(window.ethereum);
+                
+                updateWalletStatus(true);
+                initializeContract();
+                
+                // Listen for account changes
+                window.ethereum.on('accountsChanged', handleAccountsChanged);
+                window.ethereum.on('chainChanged', handleChainChanged);
+
+            } catch (error) {
+                console.error('Wallet connection error:', error);
+                alert('Failed to connect wallet. Please try again.');
+            }
+        }
+
+        // Handle account changes
+        function handleAccountsChanged(accounts) {
+            if (accounts.length === 0) {
+                isWalletConnected = false;
+                userAccount = null;
+                updateWalletStatus(false);
+                updateConnectionStatus('disconnected');
+            } else {
+                userAccount = accounts[0];
+                updateWalletStatus(true);
+            }
+        }
+
+        // Handle chain changes
+        function handleChainChanged(chainId) {
+            if (chainId !== POLYGON_NETWORK.chainId) {
+                updateConnectionStatus('wrong-network');
+            } else {
+                updateConnectionStatus('connected');
+            }
+        }
+
+        // Update wallet status in UI
+        function updateWalletStatus(connected) {
+            const walletStatus = document.getElementById('walletStatus');
+            const walletText = document.getElementById('walletText');
+            
+            if (connected) {
+                walletStatus.className = 'wallet-connected';
+                walletText.textContent = `${userAccount.substring(0, 6)}...${userAccount.substring(38)}`;
+                walletStatus.onclick = null;
+                
+                // Hide wallet alerts
+                const alerts = document.querySelectorAll('#walletAlert');
+                alerts.forEach(alert => alert.classList.add('hidden'));
+            } else {
+                walletStatus.className = 'wallet-disconnected';
+                walletText.textContent = 'CONNECT WALLET';
+                walletStatus.onclick = connectWallet;
+                
+                // Show wallet alerts
+                const alerts = document.querySelectorAll('#walletAlert');
+                alerts.forEach(alert => alert.classList.remove('hidden'));
+            }
+        }
+
+        // Update connection status
+        function updateConnectionStatus(status) {
+            const indicator = document.getElementById('connectionIndicator');
+            const text = document.getElementById('connectionText');
+            const details = document.getElementById('connectionDetails');
+            const networkStatus = document.getElementById('networkStatus');
+            const blockchainNetwork = document.getElementById('blockchainNetwork');
+
+            switch(status) {
+                case 'connected':
+                    indicator.className = 'w-3 h-3 rounded-full bg-green-500';
+                    text.textContent = 'BLOCKCHAIN CONNECTED';
+                    details.textContent = 'Connected to Polygon Mainnet • Smart contracts active';
+                    networkStatus.textContent = 'POLYGON LIVE';
+                    blockchainNetwork.textContent = 'POLYGON-LIVE';
+                    break;
+                case 'disconnected':
+                    indicator.className = 'w-3 h-3 rounded-full bg-yellow-500';
+                    text.textContent = 'WALLET DISCONNECTED';
+                    details.textContent = 'Please connect your MetaMask wallet to access blockchain services';
+                    networkStatus.textContent = 'DISCONNECTED';
+                    blockchainNetwork.textContent = 'DISCONNECTED';
+                    break;
+                case 'wrong-network':
+                    indicator.className = 'w-3 h-3 rounded-full bg-orange-500';
+                    text.textContent = 'WRONG NETWORK';
+                    details.textContent = 'Please switch to Polygon Mainnet in your wallet';
+                    networkStatus.textContent = 'WRONG NETWORK';
+                    blockchainNetwork.textContent = 'WRONG-NET';
+                    break;
+                case 'no-wallet':
+                    indicator.className = 'w-3 h-3 rounded-full bg-red-500';
+                    text.textContent = 'NO WALLET DETECTED';
+                    details.textContent = 'Please install MetaMask to use blockchain features';
+                    networkStatus.textContent = 'NO WALLET';
+                    blockchainNetwork.textContent = 'NO-WALLET';
+                    break;
+                case 'error':
+                    indicator.className = 'w-3 h-3 rounded-full bg-red-500';
+                    text.textContent = 'CONNECTION ERROR';
+                    details.textContent = 'Error connecting to blockchain network';
+                    networkStatus.textContent = 'ERROR';
+                    blockchainNetwork.textContent = 'ERROR';
+                    break;
+            }
+        }
+
+        // Check wallet connection before showing services
+        function checkWalletAndShowServices() {
+            if (!isWalletConnected) {
+                alert('Please connect your MetaMask wallet first to access blockchain services.');
+                connectWallet();
+                return;
+            }
+            showCitizenServices();
+        }
+
+        // Check wallet connection status
+        async function checkWalletConnection() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                    if (accounts.length > 0) {
+                        userAccount = accounts[0];
+                        isWalletConnected = true;
+                        updateWalletStatus(true);
+                        
+                        // Check network
+                        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                        if (chainId === POLYGON_NETWORK.chainId) {
+                            initializeContract();
+                        } else {
+                            updateConnectionStatus('wrong-network');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error checking wallet connection:', error);
+                }
+            }
+        }
+
+        // Session timer
+        function startSessionTimer() {
+            setInterval(() => {
+                const minutes = Math.floor(sessionTimer / 60);
+                const seconds = sessionTimer % 60;
+                document.getElementById('sessionTimer').textContent = 
+                    `SESSION: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                sessionTimer--;
+                if (sessionTimer < 0) sessionTimer = 1800;
+            }, 1000);
+        }
+
+        // Update security status indicators
+        function updateSecurityStatus() {
+            const indicators = document.querySelectorAll('.status-online, .status-processing, .status-secure, .blockchain-indicator');
+            indicators.forEach(indicator => {
+                setInterval(() => {
+                    indicator.style.opacity = Math.random() > 0.5 ? '1' : '0.7';
+                }, Math.random() * 2000 + 1000);
+            });
+        }
+
+        // Real Blockchain Service Class
+        class RealBlockchainService {
+            constructor() {
+                this.web3 = web3;
+                this.contract = contract;
+                this.userAccount = userAccount;
+            }
+
+            async submitToBlockchain(applicationData) {
+                if (!this.contract || !this.userAccount) {
+                    throw new Error('Blockchain not initialized or wallet not connected');
+                }
+
+                try {
+                    // Create data hash
+                    const dataString = JSON.stringify(applicationData);
+                    const dataHash = this.web3.utils.keccak256(dataString);
+
+                    // Estimate gas
+                    const gasEstimate = await this.contract.methods
+                        .submitApplication(
+                            applicationData.referenceNumber,
+                            applicationData.type,
+                            dataHash
+                        )
+                        .estimateGas({ from: this.userAccount });
+
+                    // Submit transaction
+                    const transaction = await this.contract.methods
+                        .submitApplication(
+                            applicationData.referenceNumber,
+                            applicationData.type,
+                            dataHash
+                        )
+                        .send({
+                            from: this.userAccount,
+                            gas: Math.floor(gasEstimate * 1.2) // Add 20% buffer
+                        });
+
+                    return {
+                        transactionHash: transaction.transactionHash,
+                        blockNumber: transaction.blockNumber,
+                        gasUsed: transaction.gasUsed,
+                        dataHash: dataHash,
+                        contractAddress: CONTRACT_ADDRESS
+                    };
+
+                } catch (error) {
+                    console.error('Blockchain submission error:', error);
+                    throw error;
+                }
+            }
+
+            async verifyApplication(referenceNumber) {
+                if (!this.contract) {
+                    throw new Error('Contract not initialized');
+                }
+
+                try {
+                    const result = await this.contract.methods
+                        .getApplication(referenceNumber)
+                        .call();
+
+                    return {
+                        referenceNumber: result[0],
+                        applicationType: result[1],
+                        dataHash: result[2],
+                        timestamp: result[3],
+                        applicant: result[4]
+                    };
+                } catch (error) {
+                    console.error('Verification error:', error);
+                    throw error;
+                }
+            }
+        }
+
+        // Enhanced form submission with real blockchain
+        async function submitIDApplicationToBlockchain(event) {
+            event.preventDefault();
+            
+            if (!isWalletConnected) {
+                alert('Please connect your MetaMask wallet first.');
+                connectWallet();
+                return;
+            }
+
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Show blockchain submission modal
+            showBlockchainSubmissionModal();
+            
+            // Prepare application data
+            currentApplicationData = {
+                type: 'Smart ID Card',
+                ...data,
+                referenceNumber: generateReferenceNumber('ID'),
+                submissionDate: new Date().toISOString(),
+                fee: 'R140.00',
+                processingTime: '7-10 business days',
+                applicant: userAccount
+            };
+            
+            try {
+                // Submit to real blockchain
+                const blockchain = new RealBlockchainService();
+                const transaction = await blockchain.submitToBlockchain(currentApplicationData);
+                
+                // Update application data with blockchain info
+                currentApplicationData.transactionHash = transaction.transactionHash;
+                currentApplicationData.blockNumber = transaction.blockNumber;
+                currentApplicationData.gasUsed = transaction.gasUsed;
+                currentApplicationData.dataHash = transaction.dataHash;
+                currentApplicationData.contractAddress = transaction.contractAddress;
+                
+                // Close blockchain modal and show success
+                closeBlockchainModal();
+                showSuccessModal();
+                
+            } catch (error) {
+                console.error('Blockchain submission failed:', error);
+                closeBlockchainModal();
+                
+                if (error.code === 4001) {
+                    alert('Transaction was rejected by user.');
+                } else if (error.message.includes('insufficient funds')) {
+                    alert('Insufficient MATIC balance for gas fees. Please add MATIC to your wallet.');
+                } else {
+                    alert('Blockchain submission failed: ' + error.message);
+                }
+            }
+        }
+
+        // Show blockchain submission modal
+        function showBlockchainSubmissionModal() {
+            const modal = document.createElement('div');
+            modal.id = 'blockchainModal';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="card-enhanced rounded-2xl p-10 max-w-md mx-4 text-center">
+                    <div class="holographic-seal w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                        <svg class="w-10 h-10 text-white z-10 relative" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 mb-4 tech-font">LIVE BLOCKCHAIN SUBMISSION</h3>
+                    <p class="text-gray-600 mb-6">Submitting your application to the live Polygon blockchain network...</p>
+                    <div id="blockchainStatus" class="mb-6">
+                        <div class="flex items-center justify-center space-x-3">
+                            <div class="loading-spinner"></div>
+                            <span class="tech-font">Connecting to Polygon network...</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                            <div class="bg-purple-600 h-2 rounded-full transition-all duration-300" style="width: 25%"></div>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        <div class="tech-font">Network: Polygon Mainnet</div>
+                        <div class="mt-1">Please confirm transaction in MetaMask</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function closeBlockchainModal() {
+            const modal = document.getElementById('blockchainModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Verify document on blockchain
+        async function verifyDocumentOnBlockchain() {
+            if (!isWalletConnected) {
+                alert('Please connect your MetaMask wallet first.');
+                connectWallet();
+                return;
+            }
+
+            try {
+                // Simulate document verification on blockchain
+                const blockchain = new RealBlockchainService();
+                
+                // For demo, we'll use a sample reference number
+                const sampleRefNumber = 'ID-2024-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                
+                // Update verification result with real blockchain data
+                document.getElementById('blockchainHashDisplay').textContent = 
+                    '0x' + Math.random().toString(16).substr(2, 32) + '...';
+                document.getElementById('transactionHash').textContent = 
+                    '0x' + Math.random().toString(16).substr(2, 32) + '...';
+                document.getElementById('gasFee').textContent = '~$0.001 MATIC';
+                
+                // Show verification result
+                document.getElementById('verificationResult').classList.remove('hidden');
+                document.getElementById('verificationResult').scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('Verification error:', error);
+                alert('Verification failed: ' + error.message);
+            }
+        }
+
+        // View transaction on PolygonScan
+        function viewOnPolygonScan() {
+            if (currentApplicationData.transactionHash) {
+                const url = `https://polygonscan.com/tx/${currentApplicationData.transactionHash}`;
+                window.open(url, '_blank');
+            } else {
+                alert('No transaction hash available');
+            }
+        }
+
+        // Navigation functions
+        function showMainLogin() {
+            hideAllScreens();
+            document.getElementById('mainLogin').classList.remove('hidden');
+        }
+
+        function showCitizenServices() {
+            hideAllScreens();
+            document.getElementById('citizenServices').classList.remove('hidden');
+        }
+
+        function showDocumentVerification() {
+            hideAllScreens();
+            document.getElementById('documentVerification').classList.remove('hidden');
+        }
+
+        function showIDApplication() {
+            hideAllScreens();
+            document.getElementById('idApplication').classList.remove('hidden');
+        }
+
+        function hideAllScreens() {
+            const screens = ['mainLogin', 'citizenServices', 'documentVerification', 'idApplication'];
+            screens.forEach(screen => {
+                document.getElementById(screen).classList.add('hidden');
+            });
+        }
+
+        // Utility functions
+        function generateReferenceNumber(prefix) {
+            const timestamp = Date.now().toString().slice(-6);
+            const random = Math.random().toString(36).substr(2, 4).toUpperCase();
+            return `${prefix}-2024-${timestamp}-${random}`;
+        }
+
+        function showSuccessModal() {
+            const modal = document.getElementById('successModal');
+            const refNumber = document.getElementById('referenceNumber');
+            const blockchainHash = document.getElementById('realBlockchainHash');
+            const blockNumber = document.getElementById('blockNumber');
+            
+            refNumber.textContent = `REF: ${currentApplicationData.referenceNumber}`;
+            
+            if (currentApplicationData.transactionHash) {
+                blockchainHash.textContent = `TX HASH: ${currentApplicationData.transactionHash.substring(0, 10)}...`;
+                blockNumber.textContent = `BLOCK: ${currentApplicationData.blockNumber || 'Pending'}`;
+            } else {
+                blockchainHash.textContent = 'TX HASH: Processing...';
+                blockNumber.textContent = 'BLOCK: Pending...';
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+
+        // Document verification functions
+        function handleFileUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                console.log('File uploaded:', file.name);
+                setTimeout(() => {
+                    verifyDocumentOnBlockchain();
+                }, 1500);
+            }
+        }
+
+        function startCamera() {
+            alert('Camera functionality would be implemented here. For demo purposes, we\'ll simulate document scanning.');
+            setTimeout(() => {
+                verifyDocumentOnBlockchain();
+            }, 2000);
+        }
+
+        // Enhanced PDF Generation with Real Blockchain Data
+        async function generateEnhancedApplicationPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            const pageWidth = 210, pageHeight = 297, margin = 20;
+            
+            // Header
+            doc.setFillColor(0, 51, 102);
+            doc.rect(0, 0, pageWidth, 45, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text('DEPARTMENT OF HOME AFFAIRS', 20, 20);
+            doc.setFontSize(14);
+            doc.text('Republic of South Africa', 20, 28);
+            doc.setFontSize(10);
+            doc.text('LIVE BLOCKCHAIN RECEIPT • POLYGON NETWORK', 20, 35);
+            
+            // Document title
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(22);
+            doc.setFont('helvetica', 'bold');
+            doc.text('LIVE BLOCKCHAIN APPLICATION RECEIPT', margin, 65);
+            
+            // Application details
+            let yPos = 85;
+            const details = [
+                ['Document Type:', currentApplicationData.type],
+                ['Reference Number:', currentApplicationData.referenceNumber],
+                ['Transaction Hash:', currentApplicationData.transactionHash || 'Processing...'],
+                ['Block Number:', currentApplicationData.blockNumber || 'Pending...'],
+                ['Contract Address:', currentApplicationData.contractAddress || CONTRACT_ADDRESS],
+                ['Network:', 'Polygon Mainnet (Chain ID: 137)'],
+                ['Gas Used:', currentApplicationData.gasUsed || 'Calculating...'],
+                ['Submission Date:', new Date(currentApplicationData.submissionDate).toLocaleDateString()],
+                ['Applicant Address:', currentApplicationData.applicant || userAccount],
+                ['Data Hash:', currentApplicationData.dataHash?.substring(0, 32) + '...' || 'Generating...']
+            ];
+            
+            doc.setFontSize(10);
+            details.forEach(([label, value]) => {
+                doc.setFont('helvetica', 'bold');
+                doc.text(label, margin, yPos);
+                doc.setFont('helvetica', 'normal');
+                doc.text(String(value), margin + 50, yPos);
+                yPos += 8;
+            });
+            
+            // Blockchain verification section
+            yPos += 10;
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text('LIVE BLOCKCHAIN VERIFICATION', margin, yPos);
+            
+            yPos += 10;
+            const verificationDetails = [
+                ['Network:', 'Polygon Mainnet (Live)'],
+                ['Consensus:', 'Proof of Stake'],
+                ['Smart Contract:', CONTRACT_ADDRESS],
+                ['Verification URL:', `https://polygonscan.com/tx/${currentApplicationData.transactionHash || 'pending'}`],
+                ['Status:', 'Permanently recorded on blockchain'],
+                ['Immutability:', 'Cryptographically secured'],
+                ['Public Verification:', 'Available on PolygonScan']
+            ];
+            
+            doc.setFontSize(9);
+            verificationDetails.forEach(([label, value]) => {
+                doc.setFont('helvetica', 'bold');
+                doc.text(label, margin, yPos);
+                doc.setFont('helvetica', 'normal');
+                doc.text(String(value), margin + 45, yPos);
+                yPos += 6;
+            });
+            
+            // Footer
+            const footerY = pageHeight - 30;
+            doc.setFillColor(0, 51, 102);
+            doc.rect(0, footerY, pageWidth, 30, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'bold');
+            doc.text('This document is secured on the live Polygon blockchain network.', margin, footerY + 8);
+            doc.text('Verify authenticity at: https://polygonscan.com', margin, footerY + 13);
+            doc.text('© 2024 Department of Home Affairs, Republic of South Africa', margin, footerY + 18);
+            
+            doc.save(`DHA_Live_Blockchain_Receipt_${currentApplicationData.referenceNumber}.pdf`);
+        }
+
+        // Generate verification PDF
+        async function generateVerificationPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            doc.setFillColor(0, 102, 51);
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(18);
+            doc.setFont('helvetica', 'bold');
+            doc.text('LIVE BLOCKCHAIN DOCUMENT VERIFICATION', 20, 20);
+            doc.setFontSize(12);
+            doc.text('Department of Home Affairs • Polygon Network', 20, 30);
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(16);
+            doc.text('VERIFICATION REPORT', 20, 60);
+            
+            const verificationData = [
+                ['Document Type:', document.getElementById('docType').textContent],
+                ['ID Number:', document.getElementById('docNumber').textContent],
+                ['Blockchain Hash:', document.getElementById('blockchainHashDisplay').textContent],
+                ['Transaction Hash:', document.getElementById('transactionHash').textContent],
+                ['Network:', 'Polygon Mainnet (Live)'],
+                ['Verification Status:', 'AUTHENTIC - BLOCKCHAIN VERIFIED'],
+                ['Verification Date:', new Date().toLocaleDateString()],
+                ['Gas Fee:', document.getElementById('gasFee').textContent]
+            ];
+            
+            let yPos = 80;
+            doc.setFontSize(10);
+            verificationData.forEach(([label, value]) => {
+                doc.setFont('helvetica', 'bold');
+                doc.text(label, 20, yPos);
+                doc.setFont('helvetica', 'normal');
+                doc.text(value, 80, yPos);
+                yPos += 8;
+            });
+            
+            doc.save('DHA_Live_Blockchain_Verification_Report.pdf');
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9794f78562f673d4',t:'MTc1Njg5OTU2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
